@@ -1,0 +1,55 @@
+{% extends 'layout.html' %} {% block content %}
+
+    <div class="container ">
+      <h1 class = "text-center text-light"> Tecnologías Chapinas, S.A.</h1>
+      
+      <div class="row mt-5">
+        <div class="col-md-6">
+          <div class="container-border">
+            <h2>Solicitar servicio</h2>
+            <p>Introduzca aquí su solicitud de servicio:</p>
+            <form>
+              <div class="form-group">
+                <label for="solicitud">Solicitud:</label>
+                <textarea class="form-control" id="solicitud" rows="3"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Enviar solicitud</button>
+            </form>
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="container-border">
+            <h2>Peticiones</h2>
+            <p>Seleccione una opción:</p>
+            <ul class="list-group">
+              <li class="list-group-item"><a href="#">Detalle de mensajes por usuario</a></li>
+              <li class="list-group-item"><a href="#">Resumen de pesos por usuario</a></li>
+              <li class="list-group-item"><a href="#">Prueba de solicitudes de creación de mensajes</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row mt-5">
+        <div class="col-md-6">
+          <div class="container-border">
+            <h2>Ayuda</h2>
+            <p>Seleccione una opción:</p>
+            <ul class="list-group">
+              <li class="list-group-item"><a href="/info_estudiante">Información del estudiante</a></li>
+              <li class="list-group-item"><a href="{% url 'pdf-view' %}">Documentación oficial</a></li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="container-border">
+            <h2>Opción Reset</h2>
+            <p><a href="#">Haga clic aquí</a> para reiniciar la base de datos.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+{% endblock %}
