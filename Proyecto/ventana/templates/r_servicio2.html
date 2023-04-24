@@ -1,0 +1,47 @@
+{% extends 'layout.html' %} {% block content %}
+
+<div class="container container-margin">
+    <div class="row mt-5 justify-content-center">
+      <div class="col-md-6">
+        <div class="card custom-card">
+          <div class="card-header custom-card-header text-white">
+            <h3 class="card-title">Respuesta Servicio 1</h3>
+          </div>
+          <div class="card-body">
+            <div class="form-group mb-3">
+              <label for="nombre" class="form-label text-white">XML:</label>
+                <textarea id="xmlTextarea" class="form-control no-margin-izq" readonly>
+                   
+                    <?xml version="1.0"?>
+                    <listaMensajes>
+                        <mensaje>
+                            Lugar y Fecha: Guatemala, 01/04/2023 09:31
+                            Usuario: map001@usac.edu.gt
+                            Red social: ChapinChat
+                            Hola amigos, nos vemos hoy en el gym… recuerden que después vamos a entrenar para la carrera 
+                            2K del próximo sábado. No olvieden su Ropa Deportiva y sus bebidas Hidratantes. Recuerden 
+                            que hoy por la noche juega la selección de fútbol, nos vemos en Taco Bell a las 7 pm.
+                        </mensaje>
+                    </listaMensajes>
+
+                </textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Función para ajustar automáticamente el número de filas en función del contenido
+    function adjustRows(textarea) {
+      const lines = textarea.value.split("\n").length;
+      textarea.setAttribute("rows", lines);
+    }
+  
+    // Encuentra el elemento textarea por su ID y ajusta el número de filas automáticamente
+    const xmlTextarea = document.getElementById("xmlTextarea");
+    adjustRows(xmlTextarea);
+  </script>
+
+{% endblock %}

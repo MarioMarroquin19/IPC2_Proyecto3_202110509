@@ -19,6 +19,12 @@ def home(request):
 def info_estudiante(request):
     return render(request, 'estudiante_info.html')
 
+def r_servicio1(request):
+    return render(request, 'r_servicio1.html')
+
+def r_servicio2(request):
+    return render(request, 'r_servicio2.html')
+
 def documentacion(request):
     filename = 'DocumentacionOficial_202110509.pdf'
     file_path = get_file_path(filename)

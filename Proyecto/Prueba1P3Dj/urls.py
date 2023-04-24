@@ -21,7 +21,9 @@ from ventana import views
 urlpatterns = [
     #path('admin/', admin.site.urls),
     path('', views.home),
-    path('info_estudiante', views.info_estudiante),
-    path('documentacion', views.documentacion,name='pdf-view'),
-    path('prueba', views.index, name='index'),
+    path('info_estudiante/', views.info_estudiante),
+    path('documentacion/', views.documentacion,name='pdf-view'),
+    path('prueba/', views.index, name='index'),
+    path('RespuestaServicio1/', views.r_servicio1),
+    path('RespuestaServicio2/', views.r_servicio2),
 ]
