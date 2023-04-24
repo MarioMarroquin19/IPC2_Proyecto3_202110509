@@ -1,55 +1,91 @@
 {% extends 'layout.html' %} {% block content %}
+  
+<div class="container container-margin">
 
-    <div class="container ">
-      <h1 class = "text-center text-light"> Tecnologías Chapinas, S.A.</h1>
-      
-      <div class="row mt-5">
-        <div class="col-md-6">
-          <div class="container-border">
-            <h2>Solicitar servicio</h2>
-            <p>Introduzca aquí su solicitud de servicio:</p>
-            <form>
-              <div class="form-group">
-                <label for="solicitud">Solicitud:</label>
-                <textarea class="form-control" id="solicitud" rows="3"></textarea>
-              </div>
-              <button type="submit" class="btn btn-primary">Enviar solicitud</button>
-            </form>
-          </div>
+  <div class="row mt-5 justify-content-center">
+    <div class="col-md-6 mb-4">
+      <div class="card equal-height-card custom-card">
+        <div class="card-header custom-card-header text-white">
+          <h3 class="card-title"><i class="fas fa-handshake mr-2"></i>Solicitar Servicio</h3>
         </div>
-        
-        <div class="col-md-6">
-          <div class="container-border">
-            <h2>Peticiones</h2>
-            <p>Seleccione una opción:</p>
-            <ul class="list-group">
-              <li class="list-group-item"><a href="#">Detalle de mensajes por usuario</a></li>
-              <li class="list-group-item"><a href="#">Resumen de pesos por usuario</a></li>
-              <li class="list-group-item"><a href="#">Prueba de solicitudes de creación de mensajes</a></li>
-            </ul>
+        <div class="card-body">
+          <div class="form-group mb-3">
+            <label for="Servicio1" class="form-label text-white">Seleccione un servicio:</label>
+            <form id="upload_form_1" action="http://localhost:5000/servicio1_xml" method="POST" enctype="multipart/form-data" style="display: inline;">
+              <input type="file" name="xml_file_1" id="xml_file_1" accept="text/xml" style="display: none;" onchange="submitForm('upload_form_1')">
+            </form>
+            <form id="upload_form_2" action="http://localhost:5000/servicio2_xml" method="POST" enctype="multipart/form-data" style="display: inline;">
+              <input type="file" name="xml_file_2" id="xml_file_2" accept="text/xml" style="display: none;" onchange="submitForm('upload_form_2')">
+            </form>
+            <a onclick="triggerFileUpload('xml_file_1')" class="btn btn-outline-light btn-block custom-btn">1. Definición de perfiles y palabras descartadas</a>
+            <a href="/RespuestaServicio1" class="btn btn-outline-light btn-block custom-btn">Respuesta a servicio 1</a>
+            <a onclick="triggerFileUpload('xml_file_2')" class="btn btn-outline-light btn-block custom-btn">2. Creación de nuevos mensajes</a>
+            <a href="/RespuestaServicio2" class="btn btn-outline-light btn-block custom-btn">Respuesta a servicio 2</a>
           </div>
         </div>
       </div>
       
-      <div class="row mt-5">
-        <div class="col-md-6">
-          <div class="container-border">
-            <h2>Ayuda</h2>
-            <p>Seleccione una opción:</p>
-            <ul class="list-group">
-              <li class="list-group-item"><a href="/info_estudiante">Información del estudiante</a></li>
-              <li class="list-group-item"><a href="{% url 'pdf-view' %}">Documentación oficial</a></li>
-            </ul>
-          </div>
+      <script>
+        function triggerFileUpload(inputId) {
+          document.getElementById(inputId).click();
+        }
+      
+        function submitForm(formId) {
+          document.getElementById(formId).submit();
+        }
+      </script>    
+
+    </div>
+
+    <div class="col-md-6 mb-4">
+      <div class="card equal-height-card custom-card">
+        <div class="card-header custom-card-header text-white">
+          <h3 class="card-title"><i class="fas fa-envelope mr-2"></i>Peticiones</h3>
         </div>
-        
-        <div class="col-md-6">
-          <div class="container-border">
-            <h2>Opción Reset</h2>
-            <p><a href="#">Haga clic aquí</a> para reiniciar la base de datos.</p>
+        <div class="card-body">
+          <div class="form-group mb-3">
+            <label for="opcion" class="form-label text-white">Seleccione una opción:</label>
+            <a href="/" class="btn btn-outline-light btn-block custom-btn">Detalle de mensajes por usuario</a>
+            <a href="/" class="btn btn-outline-light btn-block custom-btn">Resumen de pesos por usuario</a>
+            <a href="/" class="btn btn-outline-light btn-block custom-btn">Prueba de solicitudes de creación de mensajes</a>
           </div>
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="row mt-2 justify-content-center">
+    <div class="col-md-6 mb-4">
+      <div class="card equal-height-card1 custom-card">
+        <div class="card-header custom-card-header text-white">
+          <h3 class="card-title"><i class="fas fa-info-circle mr-2"></i>Ayuda</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-group mb-3">
+            <label class="form-label text-white">Seleccione una opción:</label>
+            <a href="/info_estudiante" class="btn btn-outline-light btn-block custom-btn">Información del estudiante</a>
+            <a href="{% url 'pdf-view' %}" class="btn btn-outline-light btn-block custom-btn">Documentación oficial</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+      <div class="card equal-height-card1 custom-card">
+        <div class="card-header custom-card-header text-white">
+          <h3 class="card-title"><i class="fas fa-redo mr-2"></i>Reset</h3>
+        </div>
+        <div class="card-body">
+          <div class="form-group mb-3">
+            <label for="opcion" class="form-label text-white">Seleccione una opción:</label>
+            <a href="/" class="btn btn-outline-light btn-block custom-btn">Clic aquí para reiniciar la base de datos</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
     
 {% endblock %}
