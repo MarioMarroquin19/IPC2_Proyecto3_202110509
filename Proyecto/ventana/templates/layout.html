@@ -5,20 +5,45 @@
     <title>Proyecto3</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css">
     <style>
-      .container-border {
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        padding: 10px;
-        margin-bottom: 20px;
-        background-color: #f5f5f5;
-      }
       body {
-        background-color: skyblue;
+        background-color: #000;
+      }
+      .equal-height-card {
+      min-height: 320px; /* Ajusto este valor segun lo necesito */
+      }
+      .equal-height-card1 {
+      min-height: 250px; /* Ajusto este valor segun lo necesito */
+      }
+      .custom-card {
+      background-color: #212121; /* Color de fondo personalizado para los cards */
+      border-color: #212121; /* Color del borde personalizado para los cards */
+      }
+      .custom-card-header {
+        background-color: #128C7E; /* Color de fondo personalizado para los encabezados de los cards */
+        border-color: #128C7E; /* Color del borde personalizado para los encabezados de los cards */
+      }
+      .custom-navbar {
+        background-color: #000; /* Color de fondo personalizado para la barra de navegación */
+        border-bottom: 1px solid #fff; /* Agrega un borde inferior blanco a la navbar */
+      }
+      .custom-brand {
+      font-size: 24px; /* tamaño de tecnologías chapinas */
+      }
+      .container-margin {
+      margin-top: 90px; /* Ajustar este valor según se necesite */
+      }
+      .custom-btn {
+      background-color: #323232; /* Color de fondo personalizado para los botones */
+      color: #fff; /* Color del texto personalizado para los botones */
+       }
+      .no-margin-izq {
+      margin-left: 0;
+      padding-left: 0;
       }
     </style>
   </head>
   <body>
-    
+    {% include 'navbar.html' %}
     {% block content %}{% endblock %}
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
