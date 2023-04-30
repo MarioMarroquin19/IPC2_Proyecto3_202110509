@@ -19,12 +19,6 @@ def home(request):
 def info_estudiante(request):
     return render(request, 'estudiante_info.html')
 
-def r_servicio1(request):
-    return render(request, 'r_servicio1.html')
-
-def r_servicio2(request):
-    return render(request, 'r_servicio2.html')
-
 def documentacion(request):
     filename = 'DocumentacionOficial_202110509.pdf'
     file_path = get_file_path(filename)
@@ -41,3 +35,20 @@ def index(request):
     status = root.find('status').text
 
     return render(request, 'index.html', {'msg': msg, 'status': status})
+
+
+def r_servicio1(request):
+    response = requests.get('http://localhost:5000/servicio1Respuesta_xml')
+    if response.status_code == 200:
+        contenido = response.text
+    else:
+        contenido = f"Error: {response.status_code} - {response.text}"
+    return render(request, 'r_servicio1.html', {'contenido': contenido})
+
+def r_servicio2(request):
+    response = requests.get('http://localhost:5000/servicio2Respuesta_xml')
+    if response.status_code == 200:
+        contenido = response.text
+    else:
+        contenido = f"Error: {response.status_code} - {response.text}"
+    return render(request, 'r_servicio2.html', {'contenido': contenido})
