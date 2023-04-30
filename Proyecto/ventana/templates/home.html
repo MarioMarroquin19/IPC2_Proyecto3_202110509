@@ -6,7 +6,7 @@
     <div class="col-md-6 mb-4">
       <div class="card equal-height-card custom-card">
         <div class="card-header custom-card-header text-white">
-          <h3 class="card-title"><i class="fas fa-handshake mr-2"></i>Solicitar Servicio</h3>
+          <h3 class="card-title text-center"><i class="fas fa-handshake mr-2"></i>Solicitar Servicio</h3>
         </div>
         <div class="card-body">
           <div class="form-group mb-3">
@@ -29,9 +29,29 @@
         function triggerFileUpload(inputId) {
           document.getElementById(inputId).click();
         }
-      
-        function submitForm(formId) {
-          document.getElementById(formId).submit();
+
+        async function submitForm(formId) {
+          const formElement = document.getElementById(formId);
+          const formData = new FormData(formElement);
+          const actionUrl = formElement.action;
+
+          try {
+            const response = await fetch(actionUrl, {
+              method: 'POST',
+              body: formData,
+            });
+
+            if (response.ok) {
+              // Muestra un mensaje de éxito
+              alert('Archivo cargado');
+            } else {
+              // Muestra un mensaje de error
+              alert('Error al cargar el archivo');
+            }
+          } catch (error) {
+            // Muestra un mensaje de error
+            alert('Error al cargar el archivo');
+          }
         }
       </script>    
 
@@ -40,7 +60,7 @@
     <div class="col-md-6 mb-4">
       <div class="card equal-height-card custom-card">
         <div class="card-header custom-card-header text-white">
-          <h3 class="card-title"><i class="fas fa-envelope mr-2"></i>Peticiones</h3>
+          <h3 class="card-title text-center"><i class="fas fa-envelope mr-2"></i>Peticiones</h3>
         </div>
         <div class="card-body">
           <div class="form-group mb-3">
@@ -58,7 +78,7 @@
     <div class="col-md-6 mb-4">
       <div class="card equal-height-card1 custom-card">
         <div class="card-header custom-card-header text-white">
-          <h3 class="card-title"><i class="fas fa-info-circle mr-2"></i>Ayuda</h3>
+          <h3 class="card-title text-center"><i class="fas fa-info-circle mr-2"></i>Ayuda</h3>
         </div>
         <div class="card-body">
           <div class="form-group mb-3">
@@ -73,16 +93,48 @@
     <div class="col-md-6 mb-4">
       <div class="card equal-height-card1 custom-card">
         <div class="card-header custom-card-header text-white">
-          <h3 class="card-title"><i class="fas fa-redo mr-2"></i>Reset</h3>
+          <h3 class="card-title text-center"><i class="fas fa-redo mr-2"></i>Reset</h3>
         </div>
         <div class="card-body">
           <div class="form-group mb-3">
             <label for="opcion" class="form-label text-white">Seleccione una opción:</label>
-            <a href="/" class="btn btn-outline-light btn-block custom-btn">Clic aquí para reiniciar la base de datos</a>
+            <a href="http://localhost:5000/reiniciar" id="reiniciarBtn" class="btn btn-outline-light btn-block custom-btn">Clic aquí para reiniciar la base de datos</a>
           </div>
         </div>
       </div>
     </div>
+    
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        const reiniciarBtn = document.getElementById("reiniciarBtn");
+      
+        reiniciarBtn.addEventListener("click", function(event) {
+          event.preventDefault(); // Evita la navegación hacia la URL en href
+      
+          const url = "http://localhost:5000/reiniciar";
+      
+          fetch(url, {
+            method: "GET",
+          })
+            .then((response) => {
+              if (response.ok) {
+                // Acciones a realizar después de reiniciar la base de datos (opcional)
+                // Ejemplo: mostrar un mensaje de éxito
+                alert("Base de datos reiniciada con éxito");
+              } else {
+                throw new Error("Error: " + response.status + " - " + response.statusText);
+              }
+            })
+            .catch((error) => {
+              alert(error.message);
+            });
+        });
+      });
+      </script>
+
+
+
+
   </div>
 
 </div>

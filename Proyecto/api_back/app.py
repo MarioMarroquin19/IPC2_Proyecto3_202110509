@@ -1,4 +1,4 @@
-from flask import Flask, make_response
+from flask import Flask, Response, make_response
 from flask_cors import CORS
 #importar jsonfy para convertir a json
 from flask import jsonify
@@ -6,10 +6,13 @@ import xml.etree.ElementTree as ET
 from flask import Flask, request
 from servicio1 import XMLProcessor
 from servicio2 import MessageProcessor
+import os
+processor = MessageProcessor()
 
 app = Flask(__name__)
 CORS(app)
 
+#ver si funciona el servidor
 @app.route('/')
 def index():
     msj = {
@@ -27,33 +30,75 @@ def index():
     response.headers.set('Content-Type', 'application/xml')
     return response
 
-@app.route('/horaActual', methods=['GET'])
-def horaActual():
-    return 'La Hora Actual'
 
-@app.route('/ConsultarDatos', methods=['GET'])
-def ConsultarDatos():
-    return 'Los datos consultados son:'
+respuesta = ""
 
-@app.route('/ActualizarDatos', methods=['POST'])
-def ActualizarDatos():
-    return 'Datos Actualizados'
-
+#servicio 1, agregar, actualizar perfiles y palabras descartadas
 @app.route('/servicio1_xml', methods=['POST'])
 def servicio1_xml():
+    global respuesta
+    # Verifica si se ha enviado un archivo
     if not request.files:
         return 'No se encontró el archivo', 400
 
+    # Obtiene el primer archivo enviado
     xml_file = next(iter(request.files.values()))
 
-    try:
-        processor = XMLProcessor(xml_file)  # Crea una instancia de XMLProcessor con el archivo XML
-        data = processor.process_xml()  # Procesa el archivo XML utilizando el método process_xml
-        return f"Archivo XML procesado y almacenado: {data}", 200
+    # Procesa el archivo XML
+    data = XMLProcessor.process_xml(xml_file)
 
-    except Exception as e:
-        return f"Error al procesar el archivo XML: {e}", 400
+    # Añade la información procesada a la base de datos (el archivo XML)
+    response = XMLProcessor.add_baseDatos(data)
+    respuesta = response
+    return response
 
+def ReiniciarServicio1():
+    # Contenido básico del archivo XML
+    global respuesta
+    contenido_basico = '''<?xml version="1.0" encoding="UTF-8"?>
+    <configuracion>
+        <perfiles>
+            <perfil>
+                <nombre></nombre>
+                <palabrasClave>
+                <palabra></palabra>
+                </palabrasClave>
+            </perfil>
+        </perfiles>
+        <descartadas>
+            <palabra></palabra>
+        </descartadas>
+    </configuracion>
+    '''
+    with open('base1.xml', 'w', encoding='utf-8') as file:
+        file.write(contenido_basico)
+    respuesta = f"""<?xml version="1.0"?>
+                <respuesta>
+                   <perfilesNuevos>
+                     Se han creado {0} perfiles nuevos
+                   </perfilesNuevos>
+                   <perfilesExistentes>
+                     Se han actualizado {0} perfiles existentes
+                   </perfilesExistentes>
+                   <descartadas>
+                     Se han creado {0} nuevas palabras a descartar
+                   </descartadas>
+                </respuesta>"""
+
+@app.route('/reiniciar', methods=['GET'])
+def api_reiniciar_base_datos():
+    ReiniciarServicio1()
+    reiniciarServicio2()
+    #Base de datos reiniciada,
+    return 'Base de datos reiniciada',200
+
+@app.route('/servicio1Respuesta_xml', methods=['GET'])
+def servicio1_xml_get():
+    return respuesta
+
+
+#servicio 2, procesar mensajes
+respuesta1 = ""
 @app.route('/servicio2_xml', methods=['POST'])
 def servicio2_xml():
     if not request.files:
@@ -66,11 +111,33 @@ def servicio2_xml():
 
     if xml_file and xml_file.filename.lower().endswith('.xml'):
         xml_content = xml_file.read().decode('utf-8')
-        processor = MessageProcessor()
         processor.process_messages(xml_content)
-        return 'Archivo XML procesado correctamente', 200
-    else:
-        return 'Archivo no válido. Por favor, suba un archivo XML.', 400
+    
+    global respuesta1
+    respuesta = processor.regresarRespuesta()
+    respuesta1 = respuesta
+    return respuesta
+    
+@app.route('/servicio2Respuesta_xml', methods=['GET'])
+def servicio2_xml_get():
+    return respuesta1
+
+
+def reiniciarServicio2():
+    global respuesta1
+    respuesta1 = f"""<?xml version="1.0"?>
+                            <respuesta>
+                                <usuarios>
+                                    Se procesaron mensajes para {0} usuarios distintos
+                                </usuarios>
+                                <mensajes>
+                                    Se procesaron {0} mensajes en total
+                                </mensajes>
+                            </respuesta>"""
+
+    with open('base2.xml', 'w', encoding='utf-8') as file:
+        file.write(respuesta1)
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
