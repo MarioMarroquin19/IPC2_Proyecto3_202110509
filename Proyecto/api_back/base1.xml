@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <configuracion>
+        <perfiles>
+            <perfil>
+                <nombre></nombre>
+                <palabrasClave>
+                <palabra></palabra>
+                </palabrasClave>
+            </perfil>
+        </perfiles>
+        <descartadas>
+            <palabra></palabra>
+        </descartadas>
+    </configuracion>
+    
