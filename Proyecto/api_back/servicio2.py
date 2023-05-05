@@ -178,20 +178,25 @@ class MessageProcessor:
         total_phrases = 0
         profile_phrase_counts = {profile: 0 for profile in self.perfiles.keys()}
 
-        for profile, keywords in self.perfiles.items():
-            for phrase in keywords:
-                count = len(re.findall(r'\b' + re.escape(phrase) + r'\b', analyzed_message, flags=re.IGNORECASE))
-                profile_phrase_counts[profile] += count
-                total_phrases += count
+        analyzed_message_clean = re.sub(r'[\n\t]', ' ', analyzed_message)
+        words = re.findall(r'\w+', analyzed_message_clean)
 
-        # Cambia la forma en que se calculan los porcentajes de perfil
-        total_words = len(re.findall(r'\w+', analyzed_message))
+        for word in words:
+            for profile, keywords in self.perfiles.items():
+                for phrase in keywords:
+                    if re.search(r'\b' + re.escape(word) + r'\b', phrase, flags=re.IGNORECASE):
+                        profile_phrase_counts[profile] += 1
+                        total_phrases += 1
+                        break
+
+        total_words = len(words)
         profile_percentages = {
             profile: (phrase_count / total_words) * 100
             for profile, phrase_count in profile_phrase_counts.items()
         }
 
         return profile_percentages
+
 
     def procesarRespuesta(self, msj):
         root = ET.fromstring(msj)
