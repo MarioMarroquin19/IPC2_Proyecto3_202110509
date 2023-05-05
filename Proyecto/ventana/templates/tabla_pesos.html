@@ -1,0 +1,77 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div id="content-to-download" class="container container-margin">
+    <div class="container container-margin">
+        <button id="download-pdf-btn" class="btn btn-primary mb-3">Descargar como PDF</button>
+        {% for username, perfil_pesos in pesos_promedio.items %}
+        <table class="table table-bordered">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th colspan="{{ num_columns }}">Usuario: {{ username }}</th>
+                </tr>
+                <tr>
+                    <th>PESO</th>
+                    {% for perfil in lista_perfiles %}
+                        <th>Perfil: "{{ perfil }}"</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-light">Peso de perfiles</td>
+                    {% for perfil, peso in perfil_pesos.items %}
+                        <td class="text-light">{{ peso }}</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+        <hr>
+        {% endfor %}
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+<script>
+function toggleTableStyles(applyStyles) {
+    var tableElements = document.querySelectorAll('.table, .bg-primary, .text-white');
+    tableElements.forEach(function (element) {
+        if (applyStyles) {
+            element.style.backgroundColor = "#212121";
+            element.style.color = "#ffffff";
+        } else {
+            element.style.backgroundColor = "";
+            element.style.color = "";
+        }
+    });
+}
+
+function toggleButtonVisibility(visible) {
+    var button = document.getElementById('download-pdf-btn');
+    button.style.display = visible ? 'block' : 'none';
+}
+
+document.getElementById('download-pdf-btn').addEventListener('click', function () {
+    var element = document.getElementById('content-to-download');
+    var opt = {
+        margin: [0, 0, 0, 0],
+        filename: 'tabla_pesos.pdf',
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+    };
+
+    // Oculta el botón antes de generar el PDF
+    toggleButtonVisibility(false);
+
+    // Aplica los estilos antes de generar el PDF
+    toggleTableStyles(true);
+
+    html2pdf().set(opt).from(element).save().then(function () {
+        // Quita los estilos después de generar el PDF
+        toggleTableStyles(false);
+
+        // Muestra el botón después de generar el PDF
+        toggleButtonVisibility(true);
+    });
+});
+</script>
+{% endblock %}
