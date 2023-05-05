@@ -7,6 +7,7 @@ from flask import Flask, request
 from servicio1 import XMLProcessor
 from servicio2 import MessageProcessor
 import os
+import datetime
 processor = MessageProcessor()
 
 app = Flask(__name__)
@@ -117,7 +118,8 @@ def servicio2_xml():
     respuesta = processor.regresarRespuesta()
     respuesta1 = respuesta
     return respuesta
-    
+
+
 @app.route('/servicio2Respuesta_xml', methods=['GET'])
 def servicio2_xml_get():
     return respuesta1
@@ -125,18 +127,66 @@ def servicio2_xml_get():
 
 def reiniciarServicio2():
     global respuesta1
-    respuesta1 = f"""<?xml version="1.0"?>
-                            <respuesta>
-                                <usuarios>
-                                    Se procesaron mensajes para {0} usuarios distintos
-                                </usuarios>
-                                <mensajes>
-                                    Se procesaron {0} mensajes en total
-                                </mensajes>
-                            </respuesta>"""
+    respuesta1 = f"""<?xml version="1.0" ?>
+<mensajes_procesados>
+</mensajes_procesados>"""
 
     with open('base2.xml', 'w', encoding='utf-8') as file:
         file.write(respuesta1)
+
+# @app.route('/mensajePrueba', methods=['POST'])
+# def mensajePrueba():
+#     xml_content = request.data.decode()
+#     processor.process_messages(xml_content)
+#     return 'Mensajes procesados', 200
+
+
+@app.route('/mensajePrueba', methods=['POST'])
+def mensajePrueba():
+    xml_content = request.data.decode()
+    processor.process_messages(xml_content)
+    infoMsj = processor.procesarRespuesta(xml_content)
+
+
+    fecha = infoMsj['fecha']
+    usuario = infoMsj['usuario']
+    perf = processor.quitarDescartadas_numeros(infoMsj['contenido'])
+    perfiles = processor.calculate_profile_percentages(perf)
+
+    processed_data = {
+        'fecha': fecha,
+        'usuario': usuario,
+        'perfiles': perfiles
+    }
+    
+
+    salida_parts = [f"""
+    <?xml version="1.0" ?>
+        <respuesta>
+            <fechaHora> {processed_data['fecha']} </fechaHora>
+            <usuario> {processed_data['usuario']} </usuario>
+            <perfiles>"""
+    ]
+
+    for perfil, porcentaje in processed_data['perfiles'].items():
+        if perfil and perfil.lower() != 'none':
+            salida_parts.append(
+                f"""
+                <perfil nombre={perfil}>
+                    <porcentajeProbabilidad> {porcentaje:.2f}% </porcentajeProbabilidad>
+                </perfil>""")
+
+    salida_parts.append(f"""
+            </perfiles>\n         </respuesta>""")
+
+    global salida
+    salida = ''.join(salida_parts)
+    
+    return 'Mensajes procesados', 200
+
+@app.route('/mensajeRespuesta', methods=['GET'])
+def mensajeRespuesta():
+    return salida
 
 
 if __name__ == '__main__':

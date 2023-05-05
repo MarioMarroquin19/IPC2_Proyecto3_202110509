@@ -1,0 +1,83 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div id="content-to-download" class="container container-margin">
+    <div class="container container-margin">
+        <button id="download-pdf-btn" class="btn btn-primary mb-3">Descargar como PDF</button>
+        {% for username, messages in data.items %}
+        <table class="table table-bordered">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th colspan="{{ messages.0.perfiles|length|add:1 }}">Usuario: {{ username }}</th>
+                </tr>
+                <tr>
+                    <th>Mensaje</th>
+                    {% for perfil, porcentaje in messages.0.perfiles.items %}
+                        {% if perfil.lower|slugify != 'none' and perfil.lower|slugify != 'quot-none-quot' %}
+                            <th>% probabilidad perfil "{{ perfil }}"</th>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for message in messages %}
+                    <tr>
+                        <td class="text-light">{{ message.timestamp }}</td>
+                        {% for perfil, porcentaje in message.perfiles.items %}
+                            {% if perfil.lower|slugify != 'none' and perfil.lower|slugify != 'quot-none-quot' %}
+                                <td class="text-light">{{ porcentaje }}</td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <hr>
+    {% endfor %}
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+<script>
+function toggleTableStyles(applyStyles) {
+    var tableElements = document.querySelectorAll('.table, .bg-primary, .text-white');
+    tableElements.forEach(function (element) {
+        if (applyStyles) {
+            element.style.backgroundColor = "#212121";
+            element.style.color = "#ffffff";
+        } else {
+            element.style.backgroundColor = "";
+            element.style.color = "";
+        }
+    });
+}
+
+function toggleButtonVisibility(visible) {
+    var button = document.getElementById('download-pdf-btn');
+    button.style.display = visible ? 'block' : 'none';
+}
+
+document.getElementById('download-pdf-btn').addEventListener('click', function () {
+    var element = document.getElementById('content-to-download');
+    var opt = {
+        margin: [0, 0, 0, 0],
+        filename: 'tabla_probabilidades.pdf',
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+    };
+
+    // Oculta el botón antes de generar el PDF
+    toggleButtonVisibility(false);
+
+    // Aplica los estilos antes de generar el PDF
+    toggleTableStyles(true);
+
+    html2pdf().set(opt).from(element).save().then(function () {
+        // Quita los estilos después de generar el PDF
+        toggleTableStyles(false);
+
+        // Muestra el botón después de generar el PDF
+        toggleButtonVisibility(true);
+    });
+});
+</script>
+{% endblock %}

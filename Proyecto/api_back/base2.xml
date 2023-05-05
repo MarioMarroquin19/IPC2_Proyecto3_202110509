@@ -1,9 +1,3 @@
-<?xml version="1.0"?>
-                            <respuesta>
-                                <usuarios>
-                                    Se procesaron mensajes para 0 usuarios distintos
-                                </usuarios>
-                                <mensajes>
-                                    Se procesaron 0 mensajes en total
-                                </mensajes>
-                            </respuesta>
+<?xml version="1.0" ?>
+<mensajes_procesados>
+</mensajes_procesados>

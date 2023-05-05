@@ -1,0 +1,94 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container container-margin">
+    <h2 class="text-light text-center">Enviar mensaje</h2>
+    <form id="mensaje-form" class="mb-3">
+        <div class="mb-3">
+            <label for="lugar" class="form-label text-light">Lugar</label>
+            <input type="text" class="form-control" id="lugar" placeholder="" required>
+        </div>
+        <div class="form-group mb-3">
+            <label for="fecha" class="form-label text-light">Fecha:</label>
+            <input type="date" class="form-control" id="fecha" required>
+        </div>
+        <div class="form-row mb-3">
+            <div class="col mb-3">
+                <label for="hora" class="form-label text-light">Hora (0-23):</label>
+                <input type="number" min="0" max="23" class="form-control" id="hora" required>
+            </div>
+            <div class="col mb-3">
+                <label for="minutos" class="form-label text-light">Minutos (0-59):</label>
+                <input type="number" min="0" max="59" class="form-control" id="minutos" required>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="usuario" class="form-label text-light">Usuario</label>
+            <input type="text" class="form-control" id="usuario" placeholder="" required>
+        </div>
+        <div class="mb-3">
+            <label for="red-social" class="form-label text-light">Red social</label>
+            <input type="text" class="form-control" id="red-social" placeholder="" required>
+        </div>
+        <div class="mb-3">
+            <label for="contenido" class="form-label text-light">Contenido del mensaje</label>
+            <textarea class="form-control" id="contenido" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </form>
+</div>
+<script>
+function submitForm(e) {
+    e.preventDefault();
+
+    const lugar = document.getElementById("lugar").value;
+    const fecha = document.getElementById("fecha").value;
+    const hora = document.getElementById("hora").value.padStart(2, "0");
+    const minutos = document.getElementById("minutos").value.padStart(2, "0");
+    const usuario = document.getElementById("usuario").value;
+    const redSocial = document.getElementById("red-social").value;
+    const contenido = document.getElementById("contenido").value;
+
+    const fechaParts = fecha.split('-');
+    const formattedDate = `${fechaParts[2]}/${fechaParts[1]}/${fechaParts[0]}`;
+    const dateTime = `${lugar}, ${formattedDate} ${hora}:${minutos}`;
+
+    const xml = `<?xml version="1.0"?>
+<listaMensajes>
+<mensaje>
+Lugar y Fecha: ${dateTime}
+Usuario: ${usuario}
+Red social: ${redSocial}
+${contenido}
+</mensaje>
+</listaMensajes>`;
+
+    console.log(xml);
+
+    fetch("http://localhost:5000/mensajePrueba", {
+        method: "POST",
+        headers: {
+            "Content-Type":"application/xml"
+        },
+        body: xml
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.text();
+        } else {
+            throw new Error('Error en la petición');
+        }
+    })
+    .then(text => {
+        console.log('Mensajes procesados:', text);
+        alert('Mensaje procesados exitosamente');
+        window.location.assign("RespuestaMensajes");
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al procesar los mensajes');
+    });
+}
+
+document.getElementById("mensaje-form").addEventListener("submit", submitForm);
+</script>
+{% endblock %}
