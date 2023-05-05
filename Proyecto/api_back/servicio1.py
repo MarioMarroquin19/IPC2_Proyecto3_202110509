@@ -1,4 +1,20 @@
 import xml.etree.ElementTree as ET
+import xml.dom.minidom
+import re
+
+
+def prettify(element):
+    rough_string = ET.tostring(element, 'utf-8')
+    reparsed = xml.dom.minidom.parseString(rough_string)
+    pretty_xml = reparsed.toprettyxml(indent="  ")
+    # Elimina líneas en blanco adicionales
+    pretty_xml = '\n'.join([line for line in pretty_xml.split('\n') if line.strip()])
+    
+    # Agrega un espacio en blanco entre las etiquetas vacías
+    pretty_xml = re.sub(r'<(\w+)/>', r'<\1></\1>', pretty_xml)
+
+    return pretty_xml
+
 
 class XMLProcessor:
     def __init__(self, xml_file):
@@ -39,7 +55,6 @@ class XMLProcessor:
         return data
     
     def add_baseDatos(data):
-        # Cargar el archivo 'database.xml' existente
         tree = ET.parse('base1.xml')
         root = tree.getroot()
 
@@ -61,9 +76,7 @@ class XMLProcessor:
                 # El perfil ya existe, actualiza las palabras clave
                 palabras_clave_existente = perfil_existente.find('palabrasClave')
                 for palabra_clave in palabras_clave:
-                #     ET.SubElement(palabras_clave_existente, 'palabra').text = palabra_clave
-                # perfiles_existentes += 1
-                
+               
                     #verificar si la palabra clave ya existe y si no existe agregarla
                     if not any(p.text == palabra_clave for p in palabras_clave_existente.findall('palabra')):     
                         ET.SubElement(palabras_clave_existente, 'palabra').text = palabra_clave
@@ -84,8 +97,10 @@ class XMLProcessor:
                 ET.SubElement(descartadas, 'palabra').text = palabra
                 palabras_descartadas_nuevas += 1
 
-        # Guarda los cambios en el archivo XML de la base de datos
-        tree.write('base1.xml',encoding='utf-8', xml_declaration=True)
+        # Guarda el archivo XML sin el perfil vacío
+        #tree.write('base1.xml',encoding='utf-8', xml_declaration=True)
+        with open('base1.xml', 'wb') as f:
+            f.write(prettify(root).encode('utf-8'))
 
         # Devuelve un mensaje con el resumen de los cambios
         return f"""<?xml version="1.0"?>
@@ -100,5 +115,4 @@ class XMLProcessor:
                      Se han creado {palabras_descartadas_nuevas} nuevas palabras a descartar
                    </descartadas>
                 </respuesta>"""
-    
     

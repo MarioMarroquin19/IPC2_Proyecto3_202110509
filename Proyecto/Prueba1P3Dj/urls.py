@@ -23,7 +23,10 @@ urlpatterns = [
     path('', views.home),
     path('info_estudiante/', views.info_estudiante),
     path('documentacion/', views.documentacion,name='pdf-view'),
-    path('prueba/', views.index, name='index'),
     path('RespuestaServicio1/', views.r_servicio1),
     path('RespuestaServicio2/', views.r_servicio2),
+    path('probabilidades/', views.tabla_probabilidades, name='tabla_probabilidades'),
+    path('pesos/', views.tabla_pesos, name='tabla_pesos'),
+    path('enviar/', views.enviar_mensaje),
+    path('enviar/RespuestaMensajes', views.r_mensajes),
 ]
